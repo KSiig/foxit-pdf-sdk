@@ -1,5 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
 using foxit.common;
+using foxit.pdf;
+using foxit;
+using foxit.pdf.annots;
+using foxit.common.fxcrt;
+using System.Runtime.InteropServices;
+using foxit.pdf.interform;
 
 namespace AddPDFSignatures
 {
@@ -61,15 +71,23 @@ namespace AddPDFSignatures
                     byte[] cert_file_password = Encoding.ASCII.GetBytes("123456");
                     new_signature.StartSign(cert_file_path, cert_file_password,
                         Signature.DigestAlgorithm.e_DigestSHA1, signed_pdf_path, IntPtr.Zero, null);
-                    Console.WriteLine("[Sign] Finished!")
+                    Console.WriteLine("[Sign] Finished!");
                 }
             }
         }
 
         static void Main(string[] args)
         {
+            string sn = "<sn>";
+            string key = "<key>";
+            ErrorCode error_code = Library.Initialize(sn, key);
+            if (error_code != ErrorCode.e_ErrSuccess)
+            {
+                return;
+            }
 
             var pdf_doc = new PDFDoc("../SignatureTest.pdf");
+            pdf_doc.StartLoad(null, false, null);
             AdobePPKLiteSignature(pdf_doc);
         }
     }
